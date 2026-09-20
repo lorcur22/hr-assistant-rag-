@@ -1,0 +1,22 @@
+[project]
+name = "hr-assistant"
+version = "0.1.0"
+description = "RAG-based HR assistant that matches candidate resumes to job queries using semantic search."
+authors = [
+    {name = "Lorenza"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<4.0.0"
+dependencies = [
+   "chromadb (>=1.5.5,<2.0.0)",
+    "openai (>=2.26.0,<3.0.0)",
+    "ollama (>=0.4.6,<0.5.0)",
+    "chainlit (>=2.0.5,<3.0.0)",
+    "scikit-learn (>=1.6.1,<2.0.0)",
+    "langchain-openai (>=0.3.2,<0.4.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Env / secrets
+.env
+.env.*
+
+# Chainlit
+.chainlit/translations/
+.files/
+
+# Vector DB (generated at runtime)
+data/chromadb/*
+!data/chromadb/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/

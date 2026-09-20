@@ -1,0 +1,59 @@
+# utils.py
+from config import Config
+from openai import OpenAI
+
+client = OpenAI(base_url=Config.AI_API_URL, api_key=Config.AI_API_KEY)
+
+
+class LLMHelper:
+
+    @staticmethod
+    def chat(messages):
+        return client.responses.create(
+            model=Config.LLM_MODEL, input=messages, stream=True
+        )
+
+    @staticmethod
+    async def get_candidate_name(context):
+        response = client.responses.create(
+            model=Config.LLM_MODEL_LOW,
+            input=[
+                {
+                    "role": "user",
+                    "content": f"""
+                      Dato il seguente contesto individua il nome e cognome del candidato e ritorna solo il nome e cognome del candidato. Quello che sto per fornirti e' il curriculum vite del candidato: {context}
+                      """,
+                }
+            ],
+        )
+        return response.output_text
+
+    @staticmethod
+    async def get_db_stats(context):
+        response = client.cresponses.create(
+            model=Config.LLM_MODEL_LOW,
+            input=[
+                {
+                    "role": "user",
+                    "content": f"""
+                      Il tuo compito è quello di descrivere in modo testuale, ma sintetico, le statistiche legate al database dei frammenti indicizzati da questo sistema. Ecco le informazioni necessarie per le statistiche da fornire: {context}
+                      """,
+                }
+            ],
+        )
+        return response.output_text
+
+    @staticmethod
+    def create_prompt(context, question):
+        return f"""
+            Dato il seguente contesto: 
+            [[[
+            {context}
+            ]]].
+            Rispondi alla domanda dell'utente: [[[ {question}]]] .
+            Spiega che nel file individuato c'e' il profilo piu' adatto. 
+            Argometa la scelta utilizzando il contenuto del testo individuato nel contesto.
+            Assicurati di indicare il nome del candidato.
+            Alla fine del tuo ragionamento, riporta le informazioni di contatto del candidato.
+            Assicurati di nominare il Nome dei file SOLO alla fine, mai nel mezzo del tuo ragionamento.
+        """
