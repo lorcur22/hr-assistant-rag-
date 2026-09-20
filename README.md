@@ -32,7 +32,7 @@ requires-python = ">=3.13,<4.0.0"
 
 ## Configurazione
 
-Crea un file `.env` nella root del progetto con la tua chiave OpenAI (non viene committato):
+Crea un file `.env` nella root del progetto con la tua chiave OpenAI:
 
 ```
 OPENAI_API_KEY=sk-...
