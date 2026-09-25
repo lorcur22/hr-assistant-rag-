@@ -1,3 +1,89 @@
+# HR Assistant — RAG for Candidate Screening
+
+An HR assistant built with RAG (Retrieval-Augmented Generation) techniques that analyzes a resume archive and answers natural-language questions about which candidate best fits a position, using semantic search over a vector database.
+
+## How it works
+
+- Resumes are read from the `resumes/` folder, split into semantic chunks, and indexed in **ChromaDB**.
+- On every startup the system automatically syncs the database with the files on disk: it computes an MD5 hash of each resume and adds, updates, or removes only what has changed (see [Sync strategy](#sync-strategy)).
+- User questions are matched against the indexed chunks via semantic search; the most relevant context is passed to a language model (OpenAI or local Ollama) to generate the answer.
+- The chat interface is built with **Chainlit** and includes quick actions to check database stats or force a reindex.
+
+## Stack
+
+- [Chainlit](https://docs.chainlit.io) — conversational interface
+- [ChromaDB](https://www.trychroma.com/) — vector database
+- [OpenAI API](https://platform.openai.com/) / [Ollama](https://ollama.com/) — language models (cloud or local)
+- [scikit-learn](https://scikit-learn.org/) — semantic chunking support
+- [Poetry](https://python-poetry.org/) — dependency management
+
+## Installation
+
+```bash
+poetry install
+eval $(poetry env activate)
+```
+
+If `poetry add` throws a version compatibility error, check that `pyproject.toml` has:
+
+```toml
+requires-python = ">=3.13,<4.0.0"
+```
+
+## Configuration
+
+Create a `.env` file in the project root with your OpenAI key:
+```
+OPENAI_API_KEY=sk-...
+```
+
+
+## Running
+
+```bash
+chainlit run hr_assistant/__init__.py -w
+```
+
+## Running local models (optional)
+
+As an alternative to OpenAI, you can use local models via [Ollama](https://ollama.com/):
+
+```bash
+ollama run llama3.2
+# or, lighter and quite capable
+ollama run deepseek-r1:1.5b
+```
+
+## Sync strategy
+
+Each resume is tracked via an MD5 hash of its content, file name, and last-modified date. On startup, the system compares the files present in `resumes/` against what's already tracked in the database and automatically detects:
+
+- **new files** → chunked and indexed;
+- **modified files** → old chunks are removed and replaced with updated ones;
+- **deleted files** → associated chunks are removed from the database.
+
+This avoids duplication, reduces unnecessary writes, and keeps the database always aligned with the actual files — even after interruptions, since the system re-syncs automatically on the next run.
+
+## Project structure
+```
+hr_assistant/
+├── __init__.py              # entry point Chainlit, gestione chat e azioni
+├── config.py                # configurazione
+├── database.py               # interfaccia ChromaDB
+├── document_processor.py     # sync e processing dei CV
+├── semantic_chunking.py       # logica di chunking semantico
+└── utils.py                   # helper per le chiamate al modello linguistico
+
+resumes/                       # CV di esempio (dati fittizi)
+data/chromadb/                  # database vettoriale (generato, non versionato)
+```
+
+## Notes
+
+The resumes in the `resumes/` folder are fictional sample data used for testing and demonstration purposes.
+
+-------------------------------------------------------------------------------------
+
 # HR Assistant — RAG per la selezione dei candidati
 
 Un assistente HR basato su tecniche RAG (Retrieval-Augmented Generation) che analizza un archivio di CV e risponde in linguaggio naturale a domande su quale candidato è più adatto a una posizione, usando ricerca semantica su un database vettoriale.
