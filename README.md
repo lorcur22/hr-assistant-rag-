@@ -67,15 +67,15 @@ This avoids duplication, reduces unnecessary writes, and keeps the database alwa
 ## Project structure
 ```
 hr_assistant/
-├── __init__.py              # entry point Chainlit, gestione chat e azioni
-├── config.py                # configurazione
-├── database.py               # interfaccia ChromaDB
-├── document_processor.py     # sync e processing dei CV
-├── semantic_chunking.py       # logica di chunking semantico
-└── utils.py                   # helper per le chiamate al modello linguistico
+├── __init__.py              # Chainlit entry point, chat and actions handling
+├── config.py                # configuration
+├── database.py               # ChromaDB interface
+├── document_processor.py     # resume sync and processing
+├── semantic_chunking.py       # semantic chunking logic
+└── utils.py                   # helpers for language model calls
 
-resumes/                       # CV di esempio (dati fittizi)
-data/chromadb/                  # database vettoriale (generato, non versionato)
+resumes/                       # sample resumes (fictional data)
+data/chromadb/                 # vector database (generated, not versioned)
 ```
 
 ## Notes
